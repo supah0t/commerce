@@ -1,7 +1,18 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Active listings</h2>
 
-    TODO
+    {% for item in list %}
+        <div class="items">
+            <ul><img src="{{ item.image }}" class="item_image" alt="Item Image"></ul>
+            <div class="text">
+                <ul>{{ item.title }}</ul>
+                <ul>Description: {{ item.description }}</ul>
+                <ul class="bid">Starting Bid: {{ item.starting_bid }}$</ul>
+            </div>
+        </div>
+        <div class="gap-10"></div>
+    {% endfor %}
+    
 {% endblock %}
