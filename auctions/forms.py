@@ -6,7 +6,9 @@ class AddListingForm(forms.ModelForm):
     class Meta:
         model = Auction_Listings
         exclude = [
-            'user'
+            'user',
+            'closed',
+            'winner'
         ]
         
         widgets = {

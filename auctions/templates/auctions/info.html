@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+        {{ item.title }}
+        {{ item.description }}
+        {{ item.starting_bid }}
+        
+        {{ user }}
+        
+        {% if not loged %}
+            Gotta Log
+        {% else %}
+            <form action="{% url 'info' item.id %}" method="POST">
+                {% csrf_token %}
+                <label for="comment">Comment: </label>
+                <input type="text" name="comment">
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+        {% endif %}
+        
+        {% if isOwner %}
+            You Own
+        {% endif %}
+        
+        {% if isWinner %}
+            You won
+        {% endif %}
+
+{% endblock %}

@@ -86,5 +86,21 @@ def create(request):
             })
     
 def info(request, item_id):
-    pass
-    #remember to add default image if user didn't input
+    item = Auction_Listings.objects.get(pk=item_id)
+    user = request.user
+    loged = False
+    isOwner = False
+    winner = False
+    if request.user.is_authenticated:
+        loged = True
+        if user == item.user:
+            isOwner = True
+    if item.winner == user:
+        winner = True
+    return render(request, "auctions/info.html", {
+        'item': item,
+        'user': user,
+        'loged': loged,
+        'isOwner': isOwner,
+        'isWinner': winner
+    })
