@@ -5,8 +5,10 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+
 class Auction_Listings(models.Model):
-    title = models.CharField(max_length=64)
-    description = models.CharField(max_length=200)
-    starting_bid = models.IntegerField()
-    image = models.URLField(default="https://banner2.cleanpng.com/20180409/zrq/kisspng-post-it-note-paper-link-free-sticky-notes-clip-art-post-it-5acbacab077577.2543104915232974510306.jpg")
+    title = models.CharField(max_length=64, blank=False)
+    description = models.TextField(max_length= 500, blank=False, null=False)
+    starting_bid = models.IntegerField(blank=False)
+    image = models.URLField(blank=True)
+    user = models.ForeignKey(User, on_delete= models.PROTECT, related_name="creator")

@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .forms import AddListingForm
 from .models import User, Auction_Listings
 
 
@@ -11,7 +12,7 @@ def index(request):
     return render(request, "auctions/index.html", {
         "list": Auction_Listings.objects.all()
     })
-
+    
 
 def login_view(request):
     if request.method == "POST":
@@ -63,3 +64,27 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def create(request):
+    if request.method == "GET":
+        form = AddListingForm()
+        return render(request, "auctions/create.html", {
+            "form": form
+        })
+    else:
+        form = AddListingForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            if not post.image:
+                post.image="https://freepikpsd.com/wp-content/uploads/2019/10/post-it-png-transparent-1-Transparent-Images.png"
+            post.save()
+            return HttpResponseRedirect(reverse('index'))
+        else: 
+            return render(request, "auctions/create.html", {
+                "message": "Invalid Post"
+            })
+    
+def info(request, item_id):
+    pass
+    #remember to add default image if user didn't input

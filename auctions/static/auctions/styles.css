@@ -1,15 +1,29 @@
+html *{
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
 body {
     padding: 10px;
 }
 
-.item_image {
-    width: 50%;
+.items {
+    display: flex;
+    border-style: solid;
+    border-radius: 10px;
+    border-color: rgb(118, 168, 211);
+    border-width: 1px;
+    height: 200px;
 }
 
-.items {
-    border-style: solid;
-    border-width: 1px;
-    display: flex;
+.image {
+    width: 40%;
+}
+
+.item_image {
+    width: auto;
+    object-fit: contain;
+    height: 160px;
+    margin: 10px;
 }
 
 .gap-10 {
@@ -17,5 +31,20 @@ body {
 }
 
 .text {
+    margin-top: 30px;
     width: 40%;
+    text-align: left;
+    height: 100%
+}
+
+.empty {
+    width: 20%;
+}
+
+.input {
+    width: 62px;
+}
+
+.form-test {
+    width: 80%;
 }
