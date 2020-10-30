@@ -4,8 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import AddListingForm
-from .models import User, Auction_Listings
+from .forms import AddListingForm, Comment_Form
+from .models import User, Auction_Listings, Comment
 
 
 def index(request):
@@ -86,6 +86,7 @@ def create(request):
             })
     
 def info(request, item_id):
+    form = Comment_Form()
     item = Auction_Listings.objects.get(pk=item_id)
     user = request.user
     loged = False
@@ -102,5 +103,12 @@ def info(request, item_id):
         'user': user,
         'loged': loged,
         'isOwner': isOwner,
-        'isWinner': winner
+        'isWinner': winner,
+        'form': form
     })
+
+def close(request, item_id):
+    pass
+
+def watchlist(request, item_id):
+    pass

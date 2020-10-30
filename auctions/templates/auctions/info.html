@@ -2,29 +2,45 @@
 
 {% block body %}
 
-        {{ item.title }}
-        {{ item.description }}
-        {{ item.starting_bid }}
-        
-        {{ user }}
-        
-        {% if not loged %}
-            Gotta Log
-        {% else %}
-            <form action="{% url 'info' item.id %}" method="POST">
-                {% csrf_token %}
-                <label for="comment">Comment: </label>
-                <input type="text" name="comment">
-                <button type="submit" class="btn btn-primary">Post Comment</button>
-            </form>
-        {% endif %}
-        
-        {% if isOwner %}
-            You Own
-        {% endif %}
-        
-        {% if isWinner %}
-            You won
-        {% endif %}
+{% if not loged %}
+    Login to interact with this post
+{% endif %}
+
+<table>
+    <th>
+        <img src="{{ item.image }}" style="height: 400px;"id="-big-item-image" alt="ItemImage">
+    </th>
+    <th>
+        <ul>
+            <li>{{ item.title }}</li>
+            <li>{{ item.description }}</li>
+            <li>{{ item.starting_bid }}</li>
+            
+            {% if not loged %}
+                {% if item.closed %}
+                    <li>SOLD!</li>
+                {% endif %}
+            {% else %}
+                {% if not item.closed %}
+                    {% if isOwner %}
+                        <li><a href ="{% url 'close' item.id %}">Close Auction</a></li>
+                    {% else %}
+                        <li><a href ="{% url 'watchlist' item.id %}">Add to Watchlist</a></li>
+                    {% endif %}
+                {% else %}
+                    SOLD!
+                {% endif %}
+            {% endif %}
+            
+            {% if isWinner %}
+                <li>You won</li>
+            {% endif %}
+        </ul>
+    </th>
+</table>
+
+{% if loged %}
+    {{ form }}
+{% endif %}
 
 {% endblock %}

@@ -6,6 +6,9 @@ body {
     padding: 10px;
 }
 
+th{
+    width: 20%;
+}
 .items {
     display: flex;
     border-style: solid;
@@ -19,7 +22,7 @@ body {
     width: 40%;
 }
 
-.item_image {
+.item-image {
     width: auto;
     object-fit: contain;
     height: 160px;
