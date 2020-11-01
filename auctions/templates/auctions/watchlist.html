@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    {% for item in list %}
+    <a href="{% url 'info' item.id %}">
+        <div class="items">
+            <div class="image">
+                <ul><img src="{{ item.image }}" class="item-image" alt="Item Image"></ul>
+            </div>
+            <div class="text">
+                <ul><h4>{{ item.title }}</h4></ul>
+                <ul class="bid"><h5>Price: {{ item.starting_bid }}$</h5></ul>
+                <ul>{{ item.description }}</ul>
+            </div>
+            <div class="empty"></div>
+        </div>
+        <div class="gap-10"></div>
+    </a>
+    {% endfor %}
+    
+{% endblock %}

@@ -129,5 +129,16 @@ def close(request, item_id):
     return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
 
 
-def watchlist(request, item_id):
-    pass
+def add(request, item_id):
+    item = Auction_Listings.objects.get(pk=item_id)
+    user = request.user
+    user.watchlist.add(item)
+    return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
+    
+    
+def watchlist(request):
+    person = request.user
+    watchlist = person.watchlist.all()
+    return render(request, 'auctions/watchlist.html', {
+        'watchlist': watchlist
+    })

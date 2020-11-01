@@ -25,7 +25,7 @@
                     {% if isOwner %}
                         <li><a href ="{% url 'close' item.id %}">Close Auction</a></li>
                     {% else %}
-                        <li><a href ="{% url 'watchlist' item.id %}">Add to Watchlist</a></li>
+                        <li><a href ="{% url 'add' item.id %}">Add to Watchlist</a></li>
                     {% endif %}
                 {% else %}
                     SOLD!
@@ -39,9 +39,10 @@
     </th>
 </table>
 
+<h4>Comments</h4>
 {% for comment in comments %}
     <ul>
-        <li>{{ comment.comment }}</li>
+        <li>{{comment.poster }}: {{ comment.comment }}</li>
     </ul>
 {% endfor %}
 

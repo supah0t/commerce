@@ -24,7 +24,7 @@ class AddListingForm(forms.ModelForm):
         exclude = [
             'user',
             'closed',
-            'winner',
+            'winner'
         ]
         
         widgets = {
