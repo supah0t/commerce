@@ -39,8 +39,21 @@
     </th>
 </table>
 
+{% for comment in comments %}
+    <ul>
+        <li>{{ comment.comment }}</li>
+    </ul>
+{% endfor %}
+
 {% if loged %}
-    {{ form }}
+    {% if not item.closed %}
+    <form action="{% url 'info' item.id %}" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <div class="gap-10"></div>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

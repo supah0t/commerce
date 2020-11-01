@@ -25,7 +25,6 @@ class AddListingForm(forms.ModelForm):
             'user',
             'closed',
             'winner',
-            'watchlist'
         ]
         
         widgets = {

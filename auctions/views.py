@@ -10,7 +10,7 @@ from .models import User, Auction_Listings, Comment
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "list": Auction_Listings.objects.all()
+        "list": Auction_Listings.objects.all().order_by('-id')
     })
     
 
@@ -86,29 +86,48 @@ def create(request):
             })
     
 def info(request, item_id):
-    form = Comment_Form()
-    item = Auction_Listings.objects.get(pk=item_id)
-    user = request.user
-    loged = False
-    isOwner = False
-    winner = False
-    if request.user.is_authenticated:
-        loged = True
-        if user == item.user:
-            isOwner = True
-    if item.winner == user:
-        winner = True
-    return render(request, "auctions/info.html", {
-        'item': item,
-        'user': user,
-        'loged': loged,
-        'isOwner': isOwner,
-        'isWinner': winner,
-        'form': form
-    })
+    if request.method == "GET":
+        form = Comment_Form()
+        item = Auction_Listings.objects.get(pk=item_id)
+        user = request.user
+        loged = False
+        isOwner = False
+        winner = False
+        comments = Comment.objects.filter(item=item)
+        if request.user.is_authenticated:
+            loged = True
+            if user == item.user:
+                isOwner = True
+        if item.winner == user:
+            winner = True
+        return render(request, "auctions/info.html", {
+            'item': item,
+            'user': user,
+            'loged': loged,
+            'isOwner': isOwner,
+            'isWinner': winner,
+            'form': form,
+            'comments': comments
+        })
+    else:
+        form = Comment_Form(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            item = Auction_Listings.objects.get(pk=item_id)
+            post.item = item
+            post.poster = request.user
+            post.save()
+            return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
 
 def close(request, item_id):
-    pass
+    item = Auction_Listings.objects.get(pk=item_id)
+    item.closed = True
+    item.save()
+    user = request.user
+    if item.winner == user:
+        winner = True
+    return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
+
 
 def watchlist(request, item_id):
     pass
