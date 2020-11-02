@@ -44,3 +44,22 @@ class Comment_Form(forms.ModelForm):
         widgets = {
             'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
+        
+        labels = {
+            'comment': ""
+        }
+        
+class Bid_Form(forms.ModelForm):
+    class Meta:
+        model = Auction_Listings
+        fields = [
+            'starting_bid'
+        ]
+        
+        labels = {
+            'starting_bid': 'Add bid'
+        }
+        
+        widgets = {
+            'starting_bid': forms.NumberInput(attrs={'class': 'form-control'})
+        }

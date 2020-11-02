@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import AddListingForm, Comment_Form
+from .forms import AddListingForm, Comment_Form, Bid_Form
 from .models import User, Auction_Listings, Comment
 
 
@@ -77,7 +77,7 @@ def create(request):
             post = form.save(commit=False)
             post.user = request.user
             if not post.image:
-                post.image="https://freepikpsd.com/wp-content/uploads/2019/10/post-it-png-transparent-1-Transparent-Images.png"
+                post.image="https://semantic-ui.com/images/wireframe/image.png"
             post.save()
             return HttpResponseRedirect(reverse('index'))
         else: 
@@ -88,14 +88,18 @@ def create(request):
 def info(request, item_id):
     if request.method == "GET":
         form = Comment_Form()
+        bid_form = Bid_Form()
         item = Auction_Listings.objects.get(pk=item_id)
         user = request.user
         loged = False
         isOwner = False
         winner = False
+        watching = False
         comments = Comment.objects.filter(item=item)
         if request.user.is_authenticated:
             loged = True
+            if (item in user.watchlist.all()):
+                watching = True
             if user == item.user:
                 isOwner = True
         if item.winner == user:
@@ -107,7 +111,9 @@ def info(request, item_id):
             'isOwner': isOwner,
             'isWinner': winner,
             'form': form,
-            'comments': comments
+            'comments': comments,
+            'watching': watching,
+            'bid_form': bid_form
         })
     else:
         form = Comment_Form(request.POST)
@@ -123,9 +129,6 @@ def close(request, item_id):
     item = Auction_Listings.objects.get(pk=item_id)
     item.closed = True
     item.save()
-    user = request.user
-    if item.winner == user:
-        winner = True
     return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
 
 
@@ -135,10 +138,36 @@ def add(request, item_id):
     user.watchlist.add(item)
     return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
     
-    
+def remove(request, item_id):
+    item = Auction_Listings.objects.get(pk=item_id)
+    user = request.user
+    user.watchlist.remove(item)
+    return HttpResponseRedirect(reverse('watchlist'))
+
 def watchlist(request):
     person = request.user
     watchlist = person.watchlist.all()
     return render(request, 'auctions/watchlist.html', {
         'watchlist': watchlist
+    })
+    
+def bid(request, item_id):
+    if request.method=="POST":
+        form = Bid_Form(request.POST)
+        if form.is_valid():
+            bid = form.save(commit=False)
+            item = Auction_Listings.objects.get(pk=item_id)
+            if bid.starting_bid < item.starting_bid:
+                return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
+            else:
+                item.starting_bid = bid.starting_bid
+                item.winner = request.user
+                item.save()
+                return HttpResponseRedirect(reverse('info', kwargs={'item_id': item_id}))
+
+def category(request, category):
+    items = Auction_Listings.objects.filter(category=category)
+    return render(request, 'auctions/category.html', {
+        'list': items,
+        'category': category
     })

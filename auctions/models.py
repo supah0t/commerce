@@ -3,9 +3,13 @@ from django.db import models
 
 
 class User(AbstractUser):
-    #watchlist = models.ManyToManyField('Auction_Listings', blank=True, related_name="person")
-    test = models.CharField(max_length=64, blank=True)
+    watchlist = models.ManyToManyField('Auction_Listings', blank=True, related_name="person")
     
+#class TimeStamp(models.Model):
+#    created_at = models.DateTimeField(auto_now_add=True)
+#    updated_at = models.DateTimeField(auto_now=True)
+#    class Meta:
+#        abstract = True
     
 class Auction_Listings(models.Model):
     title = models.CharField(max_length=64, blank=False)
@@ -14,8 +18,9 @@ class Auction_Listings(models.Model):
     image = models.URLField(blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator")
     closed = models.BooleanField(default=False)
-    winner = models.ForeignKey(User, null=True, on_delete=models.PROTECT, related_name="winner")
-    category = models.CharField(blank = False, max_length=64, default='general')
+    winner = models.ForeignKey(User, blank=True, null=True, on_delete=models.PROTECT, related_name="itemWon")
+    category = models.CharField(blank = False, max_length=64, default='general'),
+
     
 
 class Comment(models.Model):

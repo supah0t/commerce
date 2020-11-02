@@ -1,8 +1,8 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active listings</h2>
-
+    <h2>Category: {{ category }}</h2>
+    
     {% for item in list %}
         <a href="{% url 'info' item.id %}">
             <div class="items">
@@ -14,11 +14,7 @@
                     <ul class="bid"><h5>Price: {{ item.starting_bid }}$</h5></ul>
                     <ul>{{ item.description }}</ul>
                 </div>
-                <div class="empty">
-                    {% if item.closed %}
-                        <h1>Closed</h1>
-                    {% endif %}
-                </div>
+                <div class="empty"></div>
             </div>
             <div class="gap-10"></div>
         </a>

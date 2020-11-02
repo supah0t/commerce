@@ -6,15 +6,34 @@
     Login to interact with this post
 {% endif %}
 
+{{ message }}
+
+{% if watching %}
+    <p>You are watching this post</p>
+{% else %}
+    <p></p>
+{% endif %}
+
 <table>
     <th>
         <img src="{{ item.image }}" style="height: 400px;"id="-big-item-image" alt="ItemImage">
     </th>
     <th>
-        <ul>
-            <li>{{ item.title }}</li>
-            <li>{{ item.description }}</li>
-            <li>{{ item.starting_bid }}</li>
+        <ul style="list-style-type:none;">
+            <li>Owner: {{ user }}</li>
+            <li>Category: {{ item.category }}</li>
+            <li>Title: {{ item.title }}</li>
+            <li>Description: {{ item.description }}</li>
+            <div class="gap-40"></div>
+            {% if not item.closed %}
+                <li>Current Price: {{ item.starting_bid }}$</li>
+                <li>Current Highest Bidder: {{ item.winner }}</li>
+            {% else %}
+                {% if item.winner %}
+                    <li>Sold at: {{ item.starting_bid }}$</li>
+                    <li>Winner: {{ item.winner }}</li>
+                {% endif %}
+            {% endif %}
             
             {% if not loged %}
                 {% if item.closed %}
@@ -25,15 +44,31 @@
                     {% if isOwner %}
                         <li><a href ="{% url 'close' item.id %}">Close Auction</a></li>
                     {% else %}
-                        <li><a href ="{% url 'add' item.id %}">Add to Watchlist</a></li>
+                        {% if not watching %}
+                            <li><a href ="{% url 'add' item.id %}">Add to Watchlist</a></li>
+                        {% else %}
+                        <li><a href ="{% url 'remove' item.id %}">Remove from Watchlist</a></li>
+                        {% endif %}
+                    <form action="{% url 'bid' item.id %}" method="POST">
+                        {% csrf_token %}
+                        {{ bid_form.as_ul }}
+                        <div class="gap-10"></div>
+                        <button type="submit" class="btn btn-primary btn-sm">Bid</button>
+                    </form>
                     {% endif %}
                 {% else %}
+                {% if not item.winner %}
+                    Item Removed
+                {% else %}
                     SOLD!
+                {% endif %}
                 {% endif %}
             {% endif %}
             
             {% if isWinner %}
-                <li>You won</li>
+                {% if item.closed %}
+                    <li>You WON!!!!</li>
+                {% endif %}
             {% endif %}
         </ul>
     </th>
